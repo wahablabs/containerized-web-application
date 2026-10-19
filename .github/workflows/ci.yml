@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  compose-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build and start the stack
+        run: docker compose up -d --build --wait
+
+      - name: Smoke test through Nginx
+        run: |
+          curl -sf http://localhost:8080/ | tee /dev/stderr | grep -q '"status":"healthy"'
+          curl -sf http://localhost:8080/health | grep -q '"status":"healthy"'
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down
