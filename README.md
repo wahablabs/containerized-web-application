@@ -1,5 +1,10 @@
 # Containerized Web Application
 
+[![CI](https://github.com/wahablabs/containerized-web-application/actions/workflows/ci.yml/badge.svg)](https://github.com/wahablabs/containerized-web-application/actions/workflows/ci.yml)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js)
+![Nginx](https://img.shields.io/badge/Nginx-1.27-009639?logo=nginx)
+![Docker](https://img.shields.io/badge/Docker%20Compose-2496ED?logo=docker)
+
 A containerized Node.js web application deployed behind an Nginx reverse proxy using Docker and Docker Compose.
 
 ## Architecture
@@ -54,10 +59,12 @@ containerized-web-application/
 │   └── server.js
 ├── nginx/
 │   └── nginx.conf
+├── .github/workflows/ci.yml
 ├── .dockerignore
 ├── .gitignore
 ├── Dockerfile
 ├── docker-compose.yml
+├── LICENSE
 └── README.md
 ```
 
@@ -110,7 +117,7 @@ Docker Compose also uses this endpoint as the container health check.
 Clone the repository and enter the project directory:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/wahablabs/containerized-web-application.git
 cd containerized-web-application
 ```
 
@@ -178,6 +185,8 @@ The Nginx configuration is mounted as read-only:
 ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 ```
 
+Nginx starts only after the application container reports healthy, and `server_tokens off` hides the Nginx version from responses.
+
 Environment files and local dependencies are excluded from version control through `.gitignore` and `.dockerignore`.
 
 ## Stopping the Application
@@ -186,13 +195,24 @@ Environment files and local dependencies are excluded from version control throu
 docker compose down
 ```
 
+## Continuous Integration
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and pull request to `main`. It builds the stack with Docker Compose, waits for the application to become healthy, and checks `/` and `/health` through the Nginx proxy.
+
 ## Development Notes
 
 This project is designed as the foundation for a broader DevOps workflow. Future stages can extend the same application with:
 
-* GitHub Actions CI/CD
 * Docker image publishing
 * Kubernetes deployment
 * Terraform infrastructure
 * AWS EKS deployment
 * Automated deployment workflows
+
+## Author
+
+**Abdul Wahab** - [GitHub @wahablabs](https://github.com/wahablabs) · [Upwork](https://www.upwork.com/freelancers/~01070211c5bbfca5e8)
+
+## License
+
+[MIT](LICENSE)
