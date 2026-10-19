@@ -25,5 +25,6 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - web-application
+      web-application:
+        condition: service_healthy
     restart: unless-stopped
